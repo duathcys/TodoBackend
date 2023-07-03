@@ -4,11 +4,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializer import Loginserializer
+from . import serializer
+from .models import Info
+from .serializer import Loginserializer, InfoSerializer
 from .serializer import SignUpserializer
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def user_login(request):
     # if request.method=='GET':
     #     infos = Info.objects.all()
@@ -75,3 +77,12 @@ def user_signUp(request):
         })
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def user_info(request):
+    infos = request.GET.get('userid',None)
+    print(infos)
+    My_info = Info.objects.filter(user_id=infos)
+    print(My_info)
+    serializer = InfoSerializer(My_info, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

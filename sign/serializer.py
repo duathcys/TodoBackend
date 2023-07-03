@@ -66,6 +66,9 @@ class SignUpserializer(serializers.ModelSerializer):
         write_only=True,
         style={'input_type':'password'}
     )
+    nickname = serializers.CharField(
+        required=True,
+    )
 
     class Meta:
         model = Info
@@ -85,7 +88,16 @@ class SignUpserializer(serializers.ModelSerializer):
     def validate(self, data):
         user_id = data.get('user_id', None)
         user_pw = data.get('user_pw', None)
+        nickname = data.get('nickname', None)
         print('id', user_id)
         if Info.objects.filter(user_id=user_id).exists():
-            raise serializers.ValidationError('사용할 수 없는 ID입니다')
+            raise serializers.ValidationError('사용할 수 없는 ID입니다.')
+        if Info.objects.filter(nickname=nickname).exists():
+            raise serializers.ValidationError('사용할 수 없는 이름입니다.')
         return data
+
+
+class InfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Info
+        fields = '__all__'
