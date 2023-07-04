@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from . import serializer
 from .models import Info
 from .serializer import Loginserializer, InfoSerializer
 from .serializer import SignUpserializer

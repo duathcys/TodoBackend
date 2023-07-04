@@ -45,3 +45,21 @@ def todo_Detail(request, pk):
     elif request.method == 'DELETE':
         todo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['PUT'])
+def check_todo(request, pk):
+    try:
+        todo = Todo.objects.get(pk=pk)
+    except Todo.DoesNotExist:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    done = request.data.get('done')
+    if done is not None:
+        todo.done = bool(done)
+        todo.save()
+        serializer = TodoSerializer(todo)
+        return Response(serializer.data)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
