@@ -11,11 +11,6 @@ from .serializer import SignUpserializer
 
 @api_view(['POST'])
 def user_login(request):
-    # if request.method=='GET':
-    #     infos = Info.objects.all()
-    #     serializer = Loginserializer(infos, many = True)
-    #     return Response(serializer.data)
-    # if request.method=='POST':
     serializer = Loginserializer(data=request.data)
     print(serializer.is_valid())
     if serializer.is_valid(raise_exception=True):
@@ -31,24 +26,6 @@ def user_login(request):
             'refresh': refresh,
             'error': 'rr'
         })
-        # return Response(status=status.HTTP_200_OK, data=data)
-    # else:
-    #     return Response(status=status.HTTP_200_OK)
-
-    # return Response(status=status.HTTP_400_BAD_REQUEST)
-    # if request.method =='GET':
-    #     infos = Info.objects.all()
-    #     serializer = Infoserializer(infos, many = True)
-    #     return Response(serializer.data)
-    # elif request.method=='POST':
-    #     serializer = Infoserializer(data=request.data)
-    #     print(request.data)
-    #     print(serializer)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         print(serializer)
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -77,11 +54,12 @@ def user_signUp(request):
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
-def user_info(request):
-    infos = request.GET.get('userid',None)
-    print(infos)
-    My_info = Info.objects.filter(user_id=infos)
-    print(My_info)
-    serializer = InfoSerializer(My_info, many=True)
+def find_id(request):
+    nickname = request.GET.get('nickname', None)
+    print('ni', nickname)
+    my_info = Info.objects.filter(nickname=nickname)
+    serializer = InfoSerializer(my_info, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
