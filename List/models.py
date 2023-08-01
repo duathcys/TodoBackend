@@ -8,4 +8,5 @@ class Todo(models.Model):
     title = models.TextField()
     done = models.BooleanField(default=False)
     memo = models.TextField(default=None)
+    createDate = models.DateTimeField(auto_now_add=True)
     info = models.ForeignKey(Info, to_field='user_id', max_length=50, on_delete=CASCADE)

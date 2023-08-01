@@ -60,6 +60,5 @@ def find_id(request):
     nickname = request.GET.get('nickname', None)
     print('ni', nickname)
     my_info = Info.objects.filter(nickname=nickname)
-    serializer = InfoSerializer(my_info, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(my_info[0].user_id, status=status.HTTP_200_OK)
 
