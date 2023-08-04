@@ -99,3 +99,12 @@ class InfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Info
         fields = '__all__'
+
+
+class InfoFindSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Info
+        fields = (
+            'id',
+            'user_id',
+            'nickname')

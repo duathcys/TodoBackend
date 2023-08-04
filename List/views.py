@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Todo
-from .serializer import TodoSerializer
+from .models import Todo, Category
+from .serializer import TodoSerializer, CateSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -62,4 +62,18 @@ def check_todo(request, pk):
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['GET', 'POST'])
+def todo_category(request):
+    if request.method == 'GET':
+        category_list = Category.objects.all()
+        serializer = CateSerializer(category_list, many=True)
+        print(category_list)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        serializer = CateSerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(status.HTTP_400_BAD_REQUEST)
 
