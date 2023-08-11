@@ -34,10 +34,7 @@ def todo_Detail(request, pk):
         serializer = TodoSerializer(todo)
         return Response(serializer.data)
     elif request.method == 'PUT':
-        print(request.data)
         serializer = TodoSerializer(todo, data=request.data)
-        print(request.data)
-        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

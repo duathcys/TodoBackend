@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Info
-from .serializer import Loginserializer, InfoSerializer, InfoFindSerializer
+from .serializer import Loginserializer
 from .serializer import SignUpserializer
 
 
@@ -55,32 +55,46 @@ def user_signUp(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def user_auth(request, pk):
+# @api_view(['GET', 'PUT', 'DELETE'])
+# def user_auth(request, pk):
+#     userId = request.GET.get('userId', None)
+# except Info.DoesNotExist:
+#     return Response(status=status.HTTP_404_NOT_FOUND)
+# if request.method == 'GET':
+#     serializer = InfoFindSerializer(info)
+#     print(serializer)
+#     return Response(serializer.data)
+# elif request.method == 'DELETE':
+#     info.delete()
+#     return Response(status=status.HTTP_204_NO_CONTENT)
+# elif request.method == 'PUT':
+#     serializer = InfoSerializer(info, data=request.data)
+#     if serializer. is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
+#     return Response(status=status.HTTP_400_BAD_REQUEST)
+@api_view(['DELETE'])
+def user_delete(request):
     try:
-        info = Info.objects.get(pk=pk)
+        userId = request.GET.get('user_id', None)
+        info = Info.objects.get(user_id=userId)
     except Info.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    if request.method == 'GET':
-        serializer = InfoFindSerializer(info)
-        print(serializer)
-        return Response(serializer.data)
-    elif request.method == 'DELETE':
-        info.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    elif request.method == 'PUT':
-        serializer = InfoSerializer(info, data=request.data)
-        if serializer. is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    info.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['PUT'])
+def user_change(request):
+    try:
+        userId = request.GET.get('user_id', None)
+        info = Info.objects.get(user_id=userId)
+    except Info.DoesNotExist:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 def find_id(request):
     nickname = request.GET.get('nickname', None)
-    # print('ni', nickname)
-    # serializer = InfoFindSerializer()
-    # print(serializer.data)
     my_info = Info.objects.filter(nickname=nickname)
     return Response(my_info[0].user_id, status=status.HTTP_200_OK)
