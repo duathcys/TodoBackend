@@ -6,7 +6,7 @@ from sign.models import Info
 
 class Category(models.Model):
     name = models.CharField(max_length=20, unique=True)
-    priority = models.IntegerField()
+    # priority = models.IntegerField()
 
     # class Meta:
     #     db_table = 'list_category'

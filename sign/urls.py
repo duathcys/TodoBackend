@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import user_login, user_signUp, find_id, user_delete
+from .views import user_login, user_signUp, find_id, user_delete, user_change
 
 urlpatterns = [
     path("login/", user_login),
@@ -8,5 +8,6 @@ urlpatterns = [
     path("find/id/", find_id),
     # path("auth/<int:pk>", user_auth)
     path("auth/drop/", user_delete),
+    path("auth/change/", user_change),
 
 ]

@@ -88,9 +88,34 @@ def user_delete(request):
 def user_change(request):
     try:
         userId = request.GET.get('user_id', None)
+        print(userId)
         info = Info.objects.get(user_id=userId)
+        print(info)
     except Info.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = SignUpserializer(info, data=request.data)
+    print('request', request.data)
+    print(serializer)
+    if serializer.is_valid():
+        print("valid")
+        serializer.save()
+        # _user = str(user.id)
+        #
+        # token = RefreshToken.for_user(user)
+        # print(token)
+        # refresh = str(token)
+        # print(refresh)
+        # access = str(token.access_token)
+        # print(access)
+
+        # return JsonResponse({
+        #     'user': _user,
+        #     'access': access,
+        #     'refresh': refresh
+        # })
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

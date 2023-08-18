@@ -1,5 +1,7 @@
 import json
 
+from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Info
@@ -27,7 +29,8 @@ class Loginserializer(serializers.ModelSerializer):
         if Info.objects.filter(user_id=id).exists():
             user_id = Info.objects.get(user_id=id).user_id
             user_pw = Info.objects.get(user_id=id).user_pw
-            if user_pw == pw:
+
+            if check_password(pw, user_pw):
                 user = Info.objects.get(user_id=id)
             else:
                 error_msg = '비밀번호가 올바르지 않습니다'
@@ -75,7 +78,7 @@ class SignUpserializer(serializers.ModelSerializer):
     def save(self, request):
         user = super().save()
         user.user_id = self.validated_data['user_id']
-        user.user_pw = self.validated_data['user_pw']
+        user.user_pw = make_password(self.validated_data['user_pw'])
         print(user.user_id)
         print(user.user_pw)
         user.save()
@@ -108,3 +111,10 @@ class InfoFindSerializer(serializers.ModelSerializer):
             'id',
             'user_id',
             'nickname')
+
+
+# class UserSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password']
+#         extra_kwargs = {'password':{'write_only':True}}
