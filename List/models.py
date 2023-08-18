@@ -15,7 +15,7 @@ class Category(models.Model):
 class Todo(models.Model):
     title = models.TextField()
     done = models.BooleanField(default=False)
-    memo = models.TextField(default=None)
+    memo = models.TextField(default=None, null=True)
     createAt = models.DateTimeField(auto_now_add=True)
     updateAt = models.DateTimeField(auto_now=True)
     dueDate = models.CharField(max_length=10, default=None)
