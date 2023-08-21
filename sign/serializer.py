@@ -29,6 +29,7 @@ class Loginserializer(serializers.ModelSerializer):
         if Info.objects.filter(user_id=id).exists():
             user_id = Info.objects.get(user_id=id).user_id
             user_pw = Info.objects.get(user_id=id).user_pw
+            nickname = Info.objects.get(user_id=id).nickname
 
             if check_password(pw, user_pw):
                 user = Info.objects.get(user_id=id)
@@ -47,6 +48,7 @@ class Loginserializer(serializers.ModelSerializer):
         print('access', access)
 
         data = {
+            'nickname': nickname,
             'user_id': user_id,
             'user_pw': user_pw,
             'refresh': refresh,
@@ -111,10 +113,3 @@ class InfoFindSerializer(serializers.ModelSerializer):
             'id',
             'user_id',
             'nickname')
-
-
-# class UserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password']
-#         extra_kwargs = {'password':{'write_only':True}}

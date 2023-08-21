@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import check_password, make_password
 from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -5,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Info
-from .serializer import Loginserializer
+from .serializer import Loginserializer, InfoSerializer, InfoFindSerializer
 from .serializer import SignUpserializer
 
 
@@ -18,8 +19,10 @@ def user_login(request):
         user_pw = serializer.validated_data['user_pw']
         access = serializer.validated_data['access']
         refresh = serializer.validated_data['refresh']
+        nickname = serializer.validated_data['nickname']
 
         return JsonResponse({
+            'nickname': nickname,
             'user_id': user_id,
             'user_pw': user_pw,
             'access': access,
@@ -55,33 +58,42 @@ def user_signUp(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-# @api_view(['GET', 'PUT', 'DELETE'])
-# def user_auth(request, pk):
-#     userId = request.GET.get('userId', None)
-# except Info.DoesNotExist:
-#     return Response(status=status.HTTP_404_NOT_FOUND)
-# if request.method == 'GET':
-#     serializer = InfoFindSerializer(info)
-#     print(serializer)
-#     return Response(serializer.data)
-# elif request.method == 'DELETE':
-#     info.delete()
-#     return Response(status=status.HTTP_204_NO_CONTENT)
-# elif request.method == 'PUT':
-#     serializer = InfoSerializer(info, data=request.data)
-#     if serializer. is_valid():
-#         serializer.save()
-#         return Response(serializer.data)
-#     return Response(status=status.HTTP_400_BAD_REQUEST)
-@api_view(['DELETE'])
-def user_delete(request):
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_auth(request):
     try:
         userId = request.GET.get('user_id', None)
         info = Info.objects.get(user_id=userId)
+        print(info)
     except Info.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
-    info.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        serializer = InfoFindSerializer(info)
+        print(serializer)
+        return Response(serializer.data)
+    elif request.method == 'DELETE':
+        info.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    elif request.method == 'PUT':
+        userPw = request.data.get('user_pw')
+        new_password = request.data.get('new_pw')
+        new_nickname = request.data.get('nickname')
+        print(new_password)
+        print(new_nickname)
+        if check_password(userPw, info.user_pw):
+            print('kdk')
+            print(new_password)
+            if new_password:
+                info.user_pw = make_password(new_password)
+                info.nickname = new_nickname
+            else:
+                info.nickname = new_nickname
+            info.save()
+            serializer = SignUpserializer(info)
+            print(serializer.data)
+            return Response(serializer.data)
+        else:
+            return Response("현재 비밀번호가 일치하지 않습니다.", status=status.HTTP_400_BAD_REQUEST)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])
