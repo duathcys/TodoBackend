@@ -6,6 +6,8 @@ from sign.models import Info
 
 class Category(models.Model):
     name = models.CharField(max_length=20, unique=True)
+    info = models.ForeignKey(Info, to_field='user_id', max_length=50, on_delete=CASCADE)
+    createAt = models.DateTimeField(auto_now_add=True)
     # priority = models.IntegerField()
 
     # class Meta:
