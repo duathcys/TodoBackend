@@ -62,9 +62,10 @@ def check_todo(request, pk):
 @api_view(['GET', 'POST'])
 def todo_category(request):
     if request.method == 'GET':
-        category_list = Category.objects.all()
-        serializer = CateSerializer(category_list, many=True)
+        category_list = request.GET.get('info', None)
         print(category_list)
+        categories = Category.objects.select_related('info').filter(info=category_list)
+        serializer = CateSerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         serializer = CateSerializer(data=request.data)
